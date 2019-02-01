@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Who am I to You?</title>
+	<style type="text/css">
+		body * {
+			margin-bottom: 20px;
+		}
+		#Output {
+			font-size: 32px;
+		}
+	</style>
+</head>
+<body>
+	<input type="text" name="Name" placeholder="Your Instagram Name">
+	<input type="submit" name="Submit" value="Who Am I?" onclick="Classify();">
+	<div id="Output"></div>
+	<script type="text/javascript">
+		const output = document.querySelector('#Output');
+		const data = LoadJSON('acquitances.json').then(data=>{console.log(/*data*/); return data;});
+
+		function Classify(){
+			ClearOutput();
+			const name = document.querySelector('input[name=Name]').value;
+
+			if(name === ''){
+				Log(new Error('Opssss ID can\'t be empty!'));
+				return;
+			}
+			if(name === 'skz_ked'){
+				Log(`I had a crush on you, @${name}!`);
+				ShowGIF("https://media.tenor.com/images/8a0bbb1aaf7aabeaf99790eb2e8436ad/tenor.gif");
+				return;
+			}
+			if(name === 'xxmrphdxx'){
+				Log(`You're myself! LOL`);
+				return;
+			}
+			data.then(obj=>{
+				let found = false;
+				for(let prop in obj){
+					for(let person of obj[prop]){
+						if(person === name){
+							Log(`You're my ${prop}, @${name}!`);
+
+							switch(prop){
+								case "friend":
+									ShowGIF("https://i.giphy.com/media/xThtad9exUliJ4jmrm/giphy.webp");
+									break;
+								default:
+									break;
+							}
+
+							found = true;
+						}
+					}
+				}
+				return found;
+			}).then(found=>{
+				if(!found) Log("Who are you? I don't really know or am I? Maybe my acquitances?");
+			});
+		}
+
+		function delay(ms, value){
+			return new Promise(resolve=>setTimeout(resolve(value), ms));
+		}
+
+		// function FetchGIF(url){
+		// 	const image = new Image();
+		// 	image.src = url;
+		// 	return delay(image)
+		// 	.then(res=>res.blob())
+		// }
+
+		function Log(text){
+			output.innerHTML += `${text}<br>`;
+		}
+
+		function ClearOutput(){
+			output.innerHTML = "";
+		}
+
+		function ShowGIF(url){
+			const image = new Image();
+			image.src = url;
+			image.onload = function(e){
+				output.appendChild(image);
+			}
+		}
+
+		function LoadJSON(url){
+			return fetch(url).then(res=>res.json());
+		}
+
+	</script>
+</body>
+</html>
